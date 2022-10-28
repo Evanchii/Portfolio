@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+* {
+    font-family: 'Quicksand', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #161616
+}
+
+hr {
+    border-top: 1px solid white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    color: white;
+}
+
+.section {
+    min-height: 100vh;
+    background-color: #161616;
+    padding: 90px 16px;
+    color: white;
+}
+
+.active > a {
+    font-weight: 600;
+    color: #f68c09;
+    transition:ease-in-out 0.2s all;
+}
+
+/* Home */
+#home .text {
+    position: absolute;
+    margin-left: 20%;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+#home>img {
+    width: 40%;
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+/* About Me */
+#aboutme .details {
+    position: absolute;
+    right: 15%;
+}
+
+#aboutme>img {
+    width: 30%;
+    position: absolute;
+    left: 20%;
+    border-radius: 20px;
+}
+
+/* Certificates & Projects */
+.title-text {
+    text-align: center;
+    margin: auto;
+}
+
+#contact > * {
+    padding: 5%;
+}
+
+.form-group {
+    padding-bottom: 24px;
+}
+
+.contact-right {
+    text-align: center;
+}
+
+/* Contact */
+#contact > * {
+    width: 50%;
+}
+
+.flex-platform {
+    color: black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.flex-platform a {
+    margin: 1em;
+    color: black;
+    transition: all 0.2s ease-in-out;
+}
+
+.flex-platform a:hover {
+    color: #f68c09;
+}
+
+.flex-platform .card {
+    min-width: 10em;
+}
+
+.flex-platform i {
+    font-size: 2.5em;
+    margin-top: 20%;
+    vertical-align: middle;
+}
