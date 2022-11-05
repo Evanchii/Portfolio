@@ -53,6 +53,10 @@ foreach ($sqlQueries as $k => $v) {
 		textarea {
 			width: 100%;
 		}
+
+		td img {
+			width: 10rem;
+		}
 	</style>
 </head>
 
@@ -115,7 +119,7 @@ foreach ($sqlQueries as $k => $v) {
                           </td>
                           <td>
                             <button type="button" onclick="fetchMessage({$v[0]})" data-bs-toggle="modal" data-bs-target="#viewMessage" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="fa-solid fa-eye"></i></button>
-                            <button type="button" onclick="markAsRead({$v[0]})" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark as Read"><i class="fa-solid fa-envelope-circle-check"></i></button>
+                            <button type="button" onclick="markAsRed({$v[0]})" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark as Read"><i class="fa-solid fa-envelope-circle-check"></i></button>
                           </td>
                           <tr class="spacer">
                             <td colspan="100"></td>
@@ -145,7 +149,7 @@ foreach ($sqlQueries as $k => $v) {
 			</h2>
 			<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
-					<button type="button" class="btn btn-outline-dark">Add Certificate</button><br><br>
+					<button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#updateCertInfo">Add Certificate</button><br><br>
 					<div class="table-responsive custom-table-responsive">
 						<table class="table custom-table">
 							<thead>
@@ -167,31 +171,33 @@ foreach ($sqlQueries as $k => $v) {
 									$dataCerts = mysqli_fetch_all($resCerts);
 
 									foreach ($dataCerts as $k => $v) {
+										$desc = (strlen($v[2]) > 100) ? substr($v[2],0,97).'...' : $v[2];
+										$dateCert = date("m/d/Y", $v[3]);
 										echo <<<HTML
-                        <tr scope="row">
-                          <td>
-                            {$v['id']}
-                          </td>
-                          <td>{$v['title']}</td>
-                          <td>
-                            <small class="d-block">{$v['description']}</small>
-                          </td>
-                          <td>{$v['date']}</td>
-                          <td><a href="../uploads/certificates/{$v['file']}"><i class="fa-solid fa-image"></i></a></td>
-                          <td>
-                            <button type="button" onclick="openCertEdit({$v['id']});"class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" onclick="removeCert({$v['id']});"class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove"><i class="fa-solid fa-trash"></i></button>
-                          </td>
-                        </tr>
-                        <tr class="spacer">
-                          <td colspan="100"></td>
-                        </tr>
-                      HTML;
+											<tr scope="row">
+											<td>
+												{$v[0]}
+											</td>
+											<td>{$v[1]}</td>
+											<td>
+												<small class="d-block">{$desc}</small>
+											</td>
+											<td>{$dateCert}</td>
+											<td><a href="../assets/certificates/{$v[0]}.png"><i class="fa-solid fa-image"></i></a></td>
+											<td>
+												<button type="button" onclick="openCertEdit({$v[0]});"class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="fa-solid fa-pen"></i></button>
+												<button type="button" onclick="removeCert({$v[0]});"class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove"><i class="fa-solid fa-trash"></i></button>
+											</td>
+											</tr>
+											<tr class="spacer">
+											<td colspan="100"></td>
+											</tr>
+										HTML;
 									}
 								} else {
 									echo <<<HTML
-                      <tr><th colspan=6>No data found</th></tr>
-                    HTML;
+									<tr><th colspan=6>No data found</th></tr>
+									HTML;
 								}
 								?>
 							</tbody>
@@ -209,7 +215,7 @@ foreach ($sqlQueries as $k => $v) {
 			</h2>
 			<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
-					<button type="button" class="btn btn-outline-dark">Add Project</button><br><br>
+					<button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#updateProject">Add Project</button><br><br>
 					<div class="table-responsive custom-table-responsive">
 						<table class="table custom-table">
 							<thead>
@@ -233,33 +239,43 @@ foreach ($sqlQueries as $k => $v) {
 
 									foreach ($dataProj as $k => $v) {
 										echo <<<HTML
-                        <tr scope="row">
-                          <td>
-                            {$v['id']}
-                          </td>
-                          <td>{$v['title']}</td>
-                          <td>
-                            <small class="d-block">{$v['description']}</small>
-                          </td>
-                          <td>{$v['createdAt']}</td>
-                          <td>{$v['members']}</td>
-                          <td><a href="../uploads/logo/{$v['logo']}"><i class="fa-solid fa-image"></i></a></td>
-                          <td>
-        
-                            <button type="button" onclick="openAddFile({$v['id']});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Additional File"><i class="fa-solid fa-file-image"></i></button>
-                            <button type="button" onclick="openEditProj({$v['id']});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" onclick="removeProj({$v['id']});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove"><i class="fa-solid fa-trash"></i></button>
-                          </td>
-                        </tr>
-                        <tr class="spacer">
-                          <td colspan="100"></td>
-                        </tr>
-                      HTML;
+										<tr scope="row">
+										<td>
+											{$v[0]}
+										</td>
+										<td>{$v[1]}</td>
+										<td>
+											<small class="d-block">{$v[2]}</small>
+										</td>
+										<td>{$v[3]}</td>
+										<td>
+										HTML;
+
+										$memberJson = json_decode($v[4]);
+										foreach($memberJson as $k => $i) {
+											echo $i."<br>";
+										}
+
+										echo <<<HTML
+										</td>
+										<td>
+											<a href="../assets/projects/{$v[0]}.png"><i class="fa-solid fa-image"></i></a>
+										</td>
+										<td>
+											<button type="button" onclick="openAddFile({$v[0]});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Additional File"><i class="fa-solid fa-file-image"></i></button>
+											<button type="button" onclick="openEditProj({$v[0]});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="fa-solid fa-pen"></i></button>
+											<button type="button" onclick="removeProj({$v[0]});" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove"><i class="fa-solid fa-trash"></i></button>
+										</td>
+										</tr>
+										<tr class="spacer">
+										<td colspan="100"></td>
+										</tr>
+										HTML;
 									}
 								} else {
 									echo <<<HTML
-                      <tr><th colspan=7>No data found</th></tr>
-                    HTML;
+									<tr><th colspan=7>No data found</th></tr>
+									HTML;
 								}
 								?>
 							</tbody>
@@ -411,7 +427,7 @@ foreach ($sqlQueries as $k => $v) {
 
 	<!-- Visitors -->
 
-	<div class="modal fade" id="viewMessage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal modal-lg fade" id="viewMessage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -445,10 +461,11 @@ foreach ($sqlQueries as $k => $v) {
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body" id="platformContainer">
-					<form id="platformForm">
+					<form id="certForm" action="functions/addCertificate.php" method="POST" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="-1">
 						<div class="mb-3">
 							<label for="formFile" class="form-label">Upload your Certificate here</label>
-							<input class="form-control" type="file" id="certFile">
+							<input class="form-control" type="file" id="certFile" name="certFile">
 						</div>
 						<div class="mb-3">
 							<label for="certTitle" class="form-label">Title</label>
@@ -456,7 +473,7 @@ foreach ($sqlQueries as $k => $v) {
 						</div>
 						<div class="mb-3">
 							<label for="certDescription" class="form-label">Description</label>
-							<input type="text" class="form-control" id="certDescription" name="certDescription" placeholder="Lorem Ipsum">
+							<textarea type="text" class="form-control" id="certDescription" name="certDescription" placeholder="Lorem Ipsum"></textarea>
 						</div>
 						<div class="mb-3">
 							<label for="certDate" class="form-label">Date</label>
@@ -466,7 +483,7 @@ foreach ($sqlQueries as $k => $v) {
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="updateCert();">Save changes</button>
+					<button type="button" class="btn btn-primary" onclick="$('#certForm').submit();">Save changes</button>
 				</div>
 			</div>
 		</div>
@@ -474,7 +491,7 @@ foreach ($sqlQueries as $k => $v) {
 
 	<!-- Project -->
 
-	<div class="modal fade" id="viewAdditional" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal modal-xl fade" id="viewAdditional" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -490,7 +507,7 @@ foreach ($sqlQueries as $k => $v) {
 								<th scope="col">Quick Actions</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="projAddTable">
 							<tr scope="row">
 								<td>
 									0
@@ -521,18 +538,19 @@ foreach ($sqlQueries as $k => $v) {
 					<h5 class="modal-title">Add File to Project</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body" id="platformContainer">
-					<form id="additionalFileForm">
+				<div class="modal-body">
+					<form id="additionalFileForm" action="functions/addProjFile.php" method="POST" enctype="multipart/form-data">
+						<input type="hidden" name="id" id="addFileID" value="-1">
 						<input type="hidden" name="projectID" id="projectID">
 						<div class="mb-3">
 							<label for="formFile" class="form-label">Upload your Project Screenshot here</label>
-							<input class="form-control" type="file" id="cv">
+							<input class="form-control" type="file" name="ss">
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="addFile();">Add File</button>
+					<button type="button" class="btn btn-primary" onclick="$('#additionalFileForm').submit()">Add File</button>
 				</div>
 			</div>
 		</div>
@@ -546,9 +564,11 @@ foreach ($sqlQueries as $k => $v) {
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form id="projectInfForm">
+					<form id="projectInfForm" action="functions/saveProject.php" method="POST" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="-1">
 						<div class="mb-3">
 							<label for="projLogo" class="form-label">Upload Project Logo here</label>
+							<p class="fs-6">Leave blank if doesn't need to be updated. (For updates)</p>
 							<input class="form-control" type="file" name="projLogo" id="projLogo">
 						</div>
 						<div class="mb-3">
@@ -563,11 +583,21 @@ foreach ($sqlQueries as $k => $v) {
 							<label for="projDate" class="form-label">Date</label>
 							<input type="text" class="form-control" id="projDate" name="projDate" placeholder="MM/DD/YYYY">
 						</div>
+						<div class="mb-3">
+							<label for="projLead" class="form-label">Lead</label>
+							<input type="text" class="form-control" id="projLead" name="projLead" placeholder="Juan Dela Cruz">
+						</div>
+						<div class="mb-3" id="membersInput">
+							<label for="projMember" class="form-label">Member(s)</label>
+							<p class="fs-6">If to be removed, leave the field blank</p>
+							<input type="text" class="form-control" name="projMember[]" placeholder="Member">
+						</div>
+						<button type="button" class="btn btn-secondary" onclick="addMember();">Add Member Field</button>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="saveProject();">Save changes</button>
+					<button type="button" class="btn btn-primary" onclick="$('#projectInfForm').submit();">Save changes</button>
 				</div>
 			</div>
 		</div>
@@ -599,6 +629,122 @@ foreach ($sqlQueries as $k => $v) {
 					$("#updatePlatform").modal('hide');
 				}
 			});
+		}
+
+		function addMember() {
+			$("#membersInput").append('<input type="text" class="form-control" name="projMember[]" placeholder="Member">');
+		}
+
+		function openAddFile(id) {
+			$.ajax({
+				url:"functions/fetchAddFiles.php",
+				type: "POST",
+				data: {
+					"id":id
+				},
+				success: function(data) {
+					$("#viewAdditional").modal("show");
+					$("#projAddTable").html(data);
+				}
+			});
+		}
+
+		function addMoreFiles() {
+			id = $("#id_addFiles").val();
+			$("#projectID").val(id);
+			$("#viewAdditional").modal("hide");
+			$("#addFile").modal("show");
+		}
+
+		function fetchMessage(id) {
+			$.ajax({
+				url: "functions/fetchMessage.php",
+				type: "POST",
+				data: {
+					"id": id
+				},
+				success: function(data) {
+					$("#messageContainer").html(data);
+					$("#viewMessage").modal("show");
+				}
+			});
+		}
+
+		function markAsRed(id) {
+			$.ajax({
+				url: "functions/markAsRed.php",
+				type: "POST",
+				data: {
+					"id": id
+				},
+				success: function(tmp) {
+					location.reload();
+				}
+			});
+		}
+
+		function openCertEdit(id) {
+			$.ajax({
+				url: "functions/fetchCertificate.php",
+				type: "POST",
+				data: {
+					"id": id
+				},
+				success: function(data) {
+					$("#certForm").html(data);
+					$("#updateCertInfo").modal("show");
+				}
+			});
+		}
+
+		function removeCert(id) {
+			if(confirm("Do you wish to remove this certificate? This process is irreversible.")) 
+				$.ajax({
+					url: "functions/delCert.php",
+					type: "POST",
+					data: {
+						"id": id
+					},
+					success: function(tmp) {
+						location.reload();
+					}
+				});
+		}
+
+		function editFile(id) {
+			id = $("#id_addFiles").val();
+			$("#projectID").val(id);
+			$("#addFileID").val(id);
+			$("#addFile").modal("show");
+		}
+
+		function openEditProj(id) {
+			$.ajax({
+				url: "functions/fetchProject.php",
+				type: "POST",
+				data: {
+					"id": id
+				},
+				success: function(data) {
+					$("#projectInfForm").html(data);
+					$("#updateProject").modal("show");
+				}
+			});
+		}
+
+		function removeProj(id) {
+			if(confirm("Do you wish to remove this project? This process is irreversible.")) 
+				$.ajax({
+					url: "functions/delProj.php",
+					type: "POST",
+					data: {
+						"id": id
+					},
+					success: function(tmp) {
+						console.log(tmp)
+						// location.reload();
+					}
+				});
 		}
 	</script>
 </body>

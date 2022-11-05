@@ -14,6 +14,7 @@ $platforms = json_decode($data);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al Evan Castillo | Portfolio</title>
+    <link rel="shortcut icon" href="assets/ae.png" type="image/x-icon">
     <!-- Fontawesome -->
     <script src="https://kit.fontawesome.com/a2501cd80b.js" crossorigin="anonymous"></script>
     <!-- JQuery -->
@@ -98,6 +99,8 @@ $platforms = json_decode($data);
         </div>
     </nav>
     <div class="section" id="home">
+        <img src="assets/home.png" alt="">
+
         <div class="text w-25 p-3">
             <h4>Hi I'm</h4>
             <h2>Al Evan Castillo</h2>
@@ -106,8 +109,6 @@ $platforms = json_decode($data);
             <br>
             <p>I'm a System and Mobile Developer and currently a BS Information Technology Student at <a href="https://up.phinma.edu.ph">PHINMA - University of Pangasinan</a></p>
         </div>
-
-        <img src="assets/home.png" alt="">
     </div>
     <hr>
     <div class="section" id="aboutme">
@@ -121,7 +122,7 @@ $platforms = json_decode($data);
                 why I chose to pursue this degree. I've learnt my first programming language (Java) during my Senior High School
                 days and immediately fell in love with it and the rest is history.
             </p>
-            <button type="button" class="btn btn-outline-light">Download CV</button>
+            <button type="button" class="btn btn-outline-light" onclick="window.open('assets/cv.pdf', '_blank');">Download CV</button>
         </div>
     </div>
     <hr>
@@ -131,6 +132,26 @@ $platforms = json_decode($data);
             <hr>
             <h6>Here are certificates and awards I've previously received.</h6>
         </div>
+        <div class="d-flex flex-row flex-wrap justify-content-evenly">
+            <?php
+            $sql_certs = "SELECT * FROM `certificates` ORDER BY `date` ASC";
+            $q_certs = mysqli_query($mysqli, $sql_certs);
+            if (mysqli_num_rows($q_certs) > 0) {
+                $r_certs = mysqli_fetch_all($q_certs);
+
+                foreach ($r_certs as $k1 => $info) {
+                    echo <<<HTML
+                        <div class="card img-fluid no-bg certs" onclick="certificateInfo($info[0]);">
+                            <img class="card-img-top" src="assets/certificates/$info[0].png" alt="Card image" style="width:100%">
+                            <div class="card-img-overlay">
+                                <h4 class="card-title">{$info[1]}</h4>
+                            </div>
+                        </div>
+                        HTML;
+                }
+            }
+            ?>
+        </div>
     </div>
     <hr>
     <div class="section" id="projects">
@@ -139,28 +160,29 @@ $platforms = json_decode($data);
             <hr>
             <h6>Here are the projects that I've worked on or been a part of.</h6>
         </div>
+        <div class="d-flex flex-row flex-wrap justify-content-evenly">
+            <?php
+            $sql_proj = "SELECT * FROM `projects` ORDER BY `createdAt` ASC";
+            $q_proj = mysqli_query($mysqli, $sql_proj);
+            if (mysqli_num_rows($q_proj) > 0) {
+                $r_proj = mysqli_fetch_all($q_proj);
+
+                foreach ($r_proj as $k1 => $info) {
+                    echo <<<HTML
+                        <div class="card img-fluid no-bg" onclick="projectDetails($info[0]);">
+                            <img class="card-img-top" src="assets/projects/$info[0].png" alt="Card image" style="width:100%">
+                            <div class="card-img-overlay">
+                                <h4 class="card-title">{$info[1]}</h4>
+                            </div>
+                        </div>
+                        HTML;
+                }
+            }
+            ?>
+        </div>
     </div>
     <hr>
-    <div class="section d-flex flex-row justify-content-around align-items-stretch" id="contact">
-        <div class="contact-left flex-grow-1">
-            <form action="functions/saveForm.php" method="POST">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHint" placeholder="Enter Name">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHint" placeholder="Enter Email">
-                    <small id="emailHint" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea name="message" class="form-control" id="message" rows="3"></textarea>
-                </div>
-                <br>
-                <input type="submit" name="saveForm" value="Submit" class="btn btn-outline-light" />
-            </form>
-        </div>
+    <div class="section d-flex flex-row-reverse justify-content-around align-items-stretch" id="contact">
         <div class="contact-right flex-grow-1">
             <h5>You can also reach out to me through these platforms!</h5>
             <hr>
@@ -182,6 +204,54 @@ $platforms = json_decode($data);
                     HTML;
                 }
                 ?>
+            </div>
+        </div>
+        <div class="contact-left flex-grow-1">
+            <form action="functions/saveForm.php" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHint" placeholder="Enter Name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHint" placeholder="Enter Email">
+                    <small id="emailHint" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea name="message" class="form-control" id="message" rows="3"></textarea>
+                </div>
+                <br>
+                <input type="submit" name="saveForm" value="Submit" class="btn btn-outline-light" />
+            </form>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" tabindex="-1" id="certificate">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Certificate Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="con_certInfo">
+                    <!-- Insert Data here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="project">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Project Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="con_projInfo">
+                    <!-- Insert Data here -->
+                </div>
             </div>
         </div>
     </div>
@@ -230,6 +300,42 @@ $platforms = json_decode($data);
         };
 
         var typed = new Typed('.typer', options);
+    </script>
+    <!-- Modal Scripts -->
+    <script>
+        function certificateInfo(id) {
+            $.ajax({
+                url: "functions/getCertificate.php",
+                type: "POST",
+                data: {
+                    "id": id
+                },
+                success: function(data) {
+                    $("#con_certInfo").html(data);
+                    $("#certificate").modal("show");
+                },
+                error: function(err) {
+                    console.log("An error has occurred:\n".err);
+                }
+            });
+        }
+
+        function projectInfo(id) {
+            $.ajax({
+                url: "functions/getCertificate.php",
+                type: "POST",
+                data: {
+                    "id": id
+                },
+                success: function(data) {
+                    $("#con_certInfo").html(data);
+                    $("#certificate").modal("show");
+                },
+                error: function(err) {
+                    console.log("An error has occurred:\n".err);
+                }
+            });
+        }
     </script>
 </body>
 

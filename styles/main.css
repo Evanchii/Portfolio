@@ -13,6 +13,7 @@ body {
 
 hr {
     border-top: 1px solid white;
+    width: 100%;
 }
 
 a {
@@ -24,6 +25,10 @@ a:hover {
     color: white;
 }
 
+.modal-body a {
+    color: #0d6efd !important;
+}
+
 .section {
     min-height: 100vh;
     background-color: #161616;
@@ -31,10 +36,10 @@ a:hover {
     color: white;
 }
 
-.active > a {
+.active>a {
     font-weight: 600;
     color: #f68c09;
-    transition:ease-in-out 0.2s all;
+    transition: ease-in-out 0.2s all;
 }
 
 /* Home */
@@ -55,8 +60,8 @@ a:hover {
 
 /* About Me */
 #aboutme .details {
-    position: absolute;
-    right: 15%;
+    float: right;
+    margin-right: 15%;
 }
 
 #aboutme>img {
@@ -72,7 +77,7 @@ a:hover {
     margin: auto;
 }
 
-#contact > * {
+#contact>* {
     padding: 5%;
 }
 
@@ -85,7 +90,7 @@ a:hover {
 }
 
 /* Contact */
-#contact > * {
+#contact>* {
     width: 50%;
 }
 
@@ -114,4 +119,107 @@ a:hover {
     font-size: 2.5em;
     margin-top: 20%;
     vertical-align: middle;
+}
+
+.card-img-overlay {
+    cursor: pointer;
+    opacity: 0;
+    display: flex;
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 100%);
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: all 0.5s ease-in-out;
+}
+
+.card-img-overlay:hover {
+    opacity: 1;
+}
+
+.no-bg {
+    border: unset !important;
+    background: none;
+    width: 15%;
+    margin: 2.5rem;
+}
+
+.certs {
+    width: 25%;
+    max-height: 20rem;
+}
+
+.certs > img {
+    object-fit: contain !important;
+}
+
+.img-fluid > img {
+    border-radius: 15px;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+    .no-bg {
+        width: 25%;
+    }
+
+    .certs {
+        width: 35%;
+    }
+    
+    #contact {
+        display: block !important;
+    }
+
+    #contact>* {
+        width: 75%;
+        margin: auto;
+    }
+
+    #aboutme {
+        text-align: center;
+    }
+
+    #aboutme>img {
+        width: 30%;
+        position: relative;
+        left: unset;
+    }
+
+    #aboutme .details {
+        float: none;
+        margin: auto;
+        width: 75% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .no-bg {
+        width: 40%;
+    }
+
+    .certs {
+        width: 50%;
+    }
+
+    #home {
+        text-align: center;
+    }
+
+    #home>img {
+        width: 40%;
+        position: relative;
+        transform: unset;
+        margin: auto;
+        right: unset;
+        top: unset;
+    }
+
+    #home .text {
+        position: relative;
+        margin: auto;
+        top: unset;
+        transform: unset;
+        width: 50% !important;
+    }
 }
